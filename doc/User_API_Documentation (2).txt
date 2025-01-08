@@ -1,0 +1,181 @@
+
+User API Documentation
+
+Base URL:
+/api
+
+---
+
+1. Register User
+Route:
+POST /register
+Description:
+Register a new user.
+
+Request Headers:
+- Content-Type: multipart/form-data
+
+Request Body:
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "password": "password123",
+  "avatar": "image file"
+}
+
+Response:
+Success (201):
+{
+  "message": "Created user Successfully",
+  "data": {
+    "id": "user_id",
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "avatar": "avatar_url"
+  }
+}
+Error (400):
+{
+  "message": "This Error is came as a result of you creating this User!!!"
+}
+
+---
+
+2. Sign In User
+Route:
+POST /sign-in
+Description:
+Authenticate a user and sign them in.
+
+Request Headers:
+- Content-Type: application/json
+
+Request Body:
+{
+  "email": "johndoe@example.com",
+  "password": "password123"
+}
+
+Response:
+Success (201):
+{
+  "message": "welcome back John Doe",
+  "data": "user_id"
+}
+Error (400):
+- Invalid Password:
+{
+  "message": "User Password is not correct"
+}
+- User Not Found:
+{
+  "message": "User can't be found in our Database"
+}
+
+---
+
+3. Get All Users
+Route:
+GET /get-all-users
+Description:
+Retrieve a list of all registered users.
+
+Response:
+Success (200):
+{
+  "message": "All Users found",
+  "data": [
+    {
+      "id": "user_id",
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    },
+    {
+      "id": "user_id_2",
+      "name": "Jane Doe",
+      "email": "janedoe@example.com"
+    }
+  ]
+}
+Error (400):
+{
+  "message": "Error finding all users"
+}
+
+---
+
+4. Get One User
+Route:
+GET /:userID/get-user
+Description:
+Retrieve the details of a single user by their ID.
+
+Path Parameters:
+- userID (string): The ID of the user to retrieve.
+
+Response:
+Success (200):
+{
+  "message": "John Doe found",
+  "data": {
+    "id": "user_id",
+    "name": "John Doe",
+    "email": "johndoe@example.com"
+  }
+}
+Error (400):
+{
+  "message": "Error"
+}
+
+---
+
+5. Update User
+Route:
+PATCH /:userID/update
+Description:
+Update the details of a specific user.
+
+Path Parameters:
+- userID (string): The ID of the user to update.
+
+Request Body:
+{
+  "name": "Updated Name"
+}
+
+Response:
+Success (201):
+{
+  "message": "updated Updated Name successfully",
+  "data": {
+    "id": "user_id",
+    "name": "Updated Name",
+    "email": "johndoe@example.com"
+  }
+}
+Error (400):
+{
+  "message": "Error updating user"
+}
+
+---
+
+6. Delete User
+Route:
+DELETE /:userID/delete
+Description:
+Delete a specific user by their ID.
+
+Path Parameters:
+- userID (string): The ID of the user to delete.
+
+Response:
+Success (404):
+{
+  "message": "delete John Doe successfully"
+}
+Error (400):
+{
+  "message": "Error deleting user"
+}

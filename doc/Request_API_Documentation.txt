@@ -1,0 +1,59 @@
+
+# Request API Documentation
+
+## Base URL
+All routes are prefixed with `/api`.
+
+### Endpoints
+
+#### 1. **Make Friend Request**
+- **URL**: `/:userID/:friendID/make-request`
+- **Method**: POST
+- **Description**: Allows a user to send a friend request to another user.
+- **Request Parameters**:
+  - `userID` (String): ID of the user making the request.
+  - `friendID` (String): ID of the user receiving the request.
+- **Responses**:
+  - **200 OK**: Request sent successfully.
+    ```json
+    {
+      "message": "Your request has been sent"
+    }
+    ```
+  - **400 BAD REQUEST**: Error making the request.
+
+#### 2. **Remove Friend Request**
+- **URL**: `/:userID/:friendID/delete-request`
+- **Method**: DELETE
+- **Description**: Allows a user to remove a previously sent friend request.
+- **Request Parameters**:
+  - `userID` (String): ID of the user removing the request.
+  - `friendID` (String): ID of the user whose request is being removed.
+- **Responses**:
+  - **201 CREATED**: Request removed successfully.
+    ```json
+    {
+      "message": "Your request has been removed"
+    }
+    ```
+  - **400 BAD REQUEST**: Error removing the request.
+
+#### 3. **View Friend Requests**
+- **URL**: `/:userID/view-request`
+- **Method**: GET
+- **Description**: Allows a user to view their incoming friend requests.
+- **Request Parameters**:
+  - `userID` (String): ID of the user viewing requests.
+- **Responses**:
+  - **200 OK**: Requests fetched successfully.
+    ```json
+    {
+      "message": "viewing request",
+      "data": { /* Friend request data */ }
+    }
+    ```
+  - **400 BAD REQUEST**: Error fetching requests.
+
+## Error Handling
+All endpoints return appropriate HTTP status codes and error messages in case of failures.
+
