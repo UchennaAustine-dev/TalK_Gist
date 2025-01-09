@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
 export interface IPost extends Document {
   title: string;
@@ -6,16 +6,10 @@ export interface IPost extends Document {
   slug: string;
   tags: string[];
   category: string;
-  author: {
-    _id: mongoose.Types.ObjectId;
-    name: string;
-    avatar: string;
-  };
+  author: mongoose.Types.ObjectId;
   viewCount: number;
   likesCount: number;
   image?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 const PostSchema = new mongoose.Schema(
@@ -67,5 +61,7 @@ PostSchema.index({
   category: "text",
 });
 
-export default mongoose.models.Post ||
-  mongoose.model<IPost>("Post", PostSchema);
+const Post: Model<IPost> =
+  mongoose.models.Post || mongoose.model<IPost>("Post", PostSchema);
+
+export default Post;
