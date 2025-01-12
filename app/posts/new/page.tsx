@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { useToast } from "@/hooks/use-toast";
 
-export default function NewPostPage() {
+export default function CreatePostPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
@@ -19,7 +19,6 @@ export default function NewPostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!session) {
       toast({
         title: "Error",
@@ -66,7 +65,7 @@ export default function NewPostPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-8">Create New Post</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
         <div>
           <label
             htmlFor="title"
@@ -88,7 +87,7 @@ export default function NewPostPage() {
           >
             Content
           </label>
-          <RichTextEditor onChange={setContent} />
+          <RichTextEditor initialValue={content} onChange={setContent} />
         </div>
         <div>
           <label

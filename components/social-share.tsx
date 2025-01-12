@@ -32,7 +32,8 @@ export function SocialShare({ url, title, description }: SocialShareProps) {
         title: "Link copied!",
         description: "The link has been copied to your clipboard.",
       });
-    } catch (err) {
+    } catch (error) {
+      console.error("Failed to copy link:", error);
       toast({
         title: "Failed to copy",
         description: "Please try again.",

@@ -1,17 +1,17 @@
-import { Inter, Martel_Sans } from "next/font/google";
-// import { Analytics } from '@vercel/analytics/react'
+import { Inter, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/auth-provider";
-import { SearchBar } from "@/components/search-bar";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { Footer } from "@/components/common/Footer";
+import { Header } from "@/components/common/Header";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const martelSans = Martel_Sans({
-  weight: ["200", "300", "400", "600", "700", "800", "900"],
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-calsans",
+  variable: "--font-playfair",
 });
 
 export const metadata = {
@@ -31,20 +31,20 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           inter.variable,
-          martelSans.variable
+          playfair.variable
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-              <h1 className="text-2xl font-bold">TalkGist</h1>
-              <SearchBar />
-            </header>
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>
-        {/* <Analytics /> */}
+        <Analytics />
       </body>
     </html>
   );

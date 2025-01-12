@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import dbConnect from "@/lib/db";
-import User from "@/models/User";
+import User, { IUser } from "@/models/User";
 import Post, { IPost } from "@/models/Post";
 import { Types } from "mongoose";
 
@@ -29,13 +29,7 @@ async function getUserProfile(id: string): Promise<UserProfile | null> {
   const user = await User.findById(id).select("name avatar bio").lean();
   if (!user) return null;
 
-  // Explicitly type the user object
-  const typedUser = user as unknown as {
-    _id: Types.ObjectId;
-    name: string;
-    avatar?: string;
-    bio?: string;
-  };
+  const typedUser = user as unknown as IUser & { _id: Types.ObjectId };
 
   return {
     _id: typedUser._id.toString(),
@@ -52,8 +46,8 @@ async function getUserPosts(id: string): Promise<UserPost[]> {
     .sort({ createdAt: -1 })
     .lean();
 
-  return posts.map((post) => {
-    const typedPost = post as unknown as IPost & { _id: Types.ObjectId };
+  return posts.map((post: unknown): UserPost => {
+    const typedPost = post as IPost & { _id: Types.ObjectId };
     return {
       _id: typedPost._id.toString(),
       title: typedPost.title,

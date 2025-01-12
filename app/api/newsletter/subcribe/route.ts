@@ -18,9 +18,8 @@ export async function POST(req: NextRequest) {
       { message: "Subscribed successfully" },
       { status: 201 }
     );
-  } catch (error: any) {
-    if (error.code === 11000) {
-      // Duplicate key error
+  } catch (error: unknown) {
+    if (error instanceof Error && "code" in error && error.code === 11000) {
       return NextResponse.json(
         { error: "Email already subscribed" },
         { status: 400 }

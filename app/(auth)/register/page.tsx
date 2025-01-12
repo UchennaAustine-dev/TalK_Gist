@@ -7,25 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
-interface RegisterFormData {
-  name: string;
-  email: string;
-  password: string;
-}
-
 export default function RegisterPage() {
-  const [formData, setFormData] = useState<RegisterFormData>({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const { toast } = useToast();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +22,7 @@ export default function RegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name, email, password }),
       });
 
       if (res.ok) {
@@ -48,10 +35,12 @@ export default function RegisterPage() {
         const data = await res.json();
         throw new Error(data.error || "Something went wrong");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
       toast({
         title: "Error",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -73,13 +62,10 @@ export default function RegisterPage() {
             </label>
             <Input
               id="name"
-              name="name"
               type="text"
-              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              value={formData.name}
-              onChange={handleChange}
-              className="mt-1"
             />
           </div>
           <div>
@@ -91,13 +77,10 @@ export default function RegisterPage() {
             </label>
             <Input
               id="email"
-              name="email"
               type="email"
-              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1"
             />
           </div>
           <div>
@@ -109,13 +92,10 @@ export default function RegisterPage() {
             </label>
             <Input
               id="password"
-              name="password"
               type="password"
-              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              value={formData.password}
-              onChange={handleChange}
-              className="mt-1"
             />
           </div>
           <Button type="submit" className="w-full">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -27,15 +27,15 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     const res = await fetch(`/api/comments?postId=${postId}`);
     const data = await res.json();
     setComments(data);
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +66,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
         description: "Your comment has been posted",
       });
     } catch (error) {
+      console.error("Failed to post comment:", error);
       toast({
         title: "Error",
         description: "Failed to post comment",

@@ -33,6 +33,7 @@ export function Newsletter() {
         throw new Error("Failed to subscribe");
       }
     } catch (error) {
+      console.error("Newsletter subscription error:", error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

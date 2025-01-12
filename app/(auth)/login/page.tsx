@@ -6,33 +6,25 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ChromeIcon as Google } from "lucide-react";
+import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
 export default function LoginPage() {
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const result = await signIn("credentials", {
         redirect: false,
-        email: formData.email,
-        password: formData.password,
+        email,
+        password,
       });
       if (result?.error) {
         toast({
@@ -51,12 +43,29 @@ export default function LoginPage() {
         variant: "destructive",
       });
     }
+    setIsLoading(false);
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <motion.div
+      className="flex items-center justify-center min-h-screen bg-background"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="w-full max-w-md p-8 space-y-8 bg-card rounded-xl shadow-lg">
-        <h2 className="text-3xl font-bold text-center">Login to TalkGist</h2>
+        <motion.h2
+          className="text-3xl font-bold text-center font-playfair"
+          initial={{ y: -20 }}
+          animate={{ y: 0 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        >
+          Login to TalkGist
+        </motion.h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -67,13 +76,10 @@ export default function LoginPage() {
             </label>
             <Input
               id="email"
-              name="email"
               type="email"
-              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1"
             />
           </div>
           <div>
@@ -85,28 +91,29 @@ export default function LoginPage() {
             </label>
             <Input
               id="password"
-              name="password"
               type="password"
-              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              value={formData.password}
-              onChange={handleChange}
-              className="mt-1"
             />
           </div>
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-        <div className="text-center">
-          <Button
-            variant="outline"
-            onClick={() => signIn("github")}
-            className="w-full"
-          >
-            Sign in with GitHub
-          </Button>
+        <div className="flex items-center justify-center">
+          <span className="border-t w-full"></span>
+          <span className="px-4 text-gray-500">or</span>
+          <span className="border-t w-full"></span>
         </div>
+        <Button
+          onClick={handleGoogleSignIn}
+          variant="outline"
+          className="w-full"
+        >
+          <Google className="w-4 h-4 mr-2" />
+          Sign in with Google
+        </Button>
         <div className="text-center">
           <Link
             href="/register"
@@ -116,6 +123,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

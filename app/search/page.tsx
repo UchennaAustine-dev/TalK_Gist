@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { PostCard } from "@/components/post-card";
 import dbConnect from "@/lib/db";
-import Post from "@/models/Post";
+import Post, { IPost } from "@/models/Post";
+import { Types } from "mongoose";
 
 interface PostType {
   _id: string;
@@ -30,18 +31,18 @@ async function searchPosts(query: string): Promise<PostType[]> {
     .lean();
 
   return posts.map(
-    (post: any): PostType => ({
-      _id: post._id.toString(),
+    (post): PostType => ({
+      _id: (post._id as Types.ObjectId).toString(),
       title: post.title,
       slug: post.slug,
       content: post.content,
       tags: post.tags,
       author: {
-        _id: post.author._id.toString(),
+        _id: (post.author._id as Types.ObjectId).toString(),
         name: post.author.name,
         avatar: post.author.avatar || "",
       },
-      createdAt: post.createdAt.toISOString(),
+      createdAt: (post.createdAt as Date).toISOString(),
       image: post.image,
     })
   );
@@ -57,7 +58,9 @@ export default async function SearchPage({
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Search Results for "{query}"</h1>
+      <h1 className="text-3xl font-bold mb-8">
+        Search Results for &ldquo;{query}&rdquo;
+      </h1>
       <Suspense fallback={<div>Loading...</div>}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (

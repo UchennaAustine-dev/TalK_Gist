@@ -14,15 +14,18 @@ export async function GET(req: NextRequest) {
 
   await dbConnect();
   const comments = await Comment.find({ post: postId })
-    .populate("author", "name avatar")
+    .populate<{ author: { name: string; avatar: string } }>(
+      "author",
+      "name avatar"
+    )
     .sort({ createdAt: -1 });
 
   return NextResponse.json(comments);
 }
 
 export async function POST(req: NextRequest) {
-  const session: any = await getServerSession(authOptions);
-  if (!session) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
